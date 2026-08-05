@@ -164,8 +164,8 @@ function showSuccess(storeName) {
 
             <div class="success-note">
                 📱 Tunjukkan halaman ini kepada
-                <b>Panitia Atau Brand Advisor Paragon</b>
-                untuk mendapatkan Stamp!.
+                <b>Panitia Atau Brand Advisor </b>
+                yang ada di stan Paragon untuk mendapatkan Stamp!.
             </div>
 
         </div>
