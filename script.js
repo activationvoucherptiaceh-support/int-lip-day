@@ -136,11 +136,11 @@ function showSuccess(storeName) {
 
             <div class="success-icon">🎉</div>
 
-            <h2>CLAIM BERHASIL</h2>
+            <h2>PROGRES SELESAI</h2>
 
             <p class="success-subtitle">
                 Terima kasih telah menyelesaikan seluruh misi
-                <b>INTERNATIONAL LIP DAY</b>.
+                <b>FOLLOW SOCIAL MEDIA</b>.
             </p>
 
             <div class="success-card">
@@ -164,8 +164,8 @@ function showSuccess(storeName) {
 
             <div class="success-note">
                 📱 Tunjukkan halaman ini kepada
-                <b>Beauty Advisor</b>
-                untuk mendapatkan hadiah.
+                <b>Panitia Atau Brand Advisor Paragon</b>
+                untuk mendapatkan Stamp!.
             </div>
 
         </div>
