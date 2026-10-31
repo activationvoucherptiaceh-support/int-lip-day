@@ -2,7 +2,7 @@
 // API
 // =========================
 
-const API_URL = "https://script.google.com/macros/s/AKfycbwaVhnjGeh1AYzOtN_b9rmujwwyYDExsCpnJfoWxYU7y_3so397P4Plw8PeRjaz15fu4g/exec";
+//const API_URL = "https://script.google.com/macros/s/AKfycbwaVhnjGeh1AYzOtN_b9rmujwwyYDExsCpnJfoWxYU7y_3so397P4Plw8PeRjaz15fu4g/exec";
 
 let contents = [];
 
@@ -329,7 +329,7 @@ function renderButtons() {
                         </div>
 
                         <div class="text-xs mt-1 opacity-80">
-                            Open mission →
+                            Follow Instagram →
                         </div>
                     </div>
 
@@ -372,69 +372,45 @@ function renderButtons() {
 // LOAD CONTENTS
 // =========================
 
+// =========================
+// LOAD CONTENTS
+// =========================
 async function loadContents() {
-
     const store = getStoreId();
-
     try {
-
-        const response = await fetch(
-            `${API_URL}?store=${encodeURIComponent(store)}`
-        );
-
+        // 1. Ubah fetch agar mengarah ke file JSON lokal
+        const response = await fetch('./data.json');
+        
         if (!response.ok) {
-
-            throw new Error(
-                `HTTP Error ${response.status}`
-            );
-
+            throw new Error(`HTTP Error ${response.status}`);
         }
-
-        contents = await response.json();
-
+        
+        const allData = await response.json();
+        
+        // 2. Filter data berdasarkan URL (?store=...) atau yang berlaku untuk "ALL"
+        contents = allData.filter(item => item.store === store || item.store === "ALL");
+        
         console.log("Contents:", contents);
-
 
         // Pastikan progress sesuai jumlah content
         if (progress.length < contents.length) {
-
             progress.length = contents.length;
-
         }
 
-
         renderButtons();
-
         updateProgress();
-
 
         // =========================
         // CEK SUDAH CLAIM
         // =========================
-
-        const claimed = localStorage.getItem(
-            getClaimKey()
-        );
-
+        const claimed = localStorage.getItem(getClaimKey());
         if (claimed === "true") {
-
-            showSuccess(
-                getStoreName()
-            );
-
+            showSuccess(getStoreName());
         }
-
     } catch (err) {
-
-        console.error(
-            "Gagal mengambil data:",
-            err
-        );
-
-        alert("Gagal mengambil data.");
-
+        console.error("Gagal mengambil data:", err);
+        alert("Gagal mengambil data dari lokal.");
     }
-
 }
 
 
@@ -486,75 +462,32 @@ window.addEventListener("focus", () => {
 // CLAIM REWARD
 // =========================
 
+// =========================
+// CLAIM REWARD
+// =========================
 async function claimReward() {
-
     if (claimButton.disabled) {
-
         return;
-
     }
-
     const store = getStoreId();
-
     claimButton.disabled = true;
+    claimButton.innerText = "Processing...";
 
-    claimButton.innerText =
-        "Processing...";
-
-
-    try {
-
-        const response = await fetch(
-            `${API_URL}?action=claim&store=${encodeURIComponent(store)}`
-        );
-
-        if (!response.ok) {
-
-            throw new Error(
-                `HTTP Error ${response.status}`
-            );
-
+    // Simulasi jeda loading selama 1 detik agar terasa seperti memproses data
+    setTimeout(() => {
+        try {
+            // Simpan status klaim ke memori HP user
+            localStorage.setItem(getClaimKey(), "true");
+            
+            // Tampilkan halaman sukses
+            showSuccess(getStoreName());
+        } catch (err) {
+            console.error("Claim error:", err);
+            alert("Terjadi kesalahan saat melakukan claim.");
+            claimButton.disabled = false;
+            updateProgress();
         }
-
-        const result = await response.json();
-
-
-        if (result.success) {
-
-            localStorage.setItem(
-                getClaimKey(),
-                "true"
-            );
-
-            showSuccess(
-                getStoreName()
-            );
-
-        } else {
-
-            throw new Error(
-                "Claim gagal"
-            );
-
-        }
-
-    } catch (err) {
-
-        console.error(
-            "Claim error:",
-            err
-        );
-
-        alert(
-            "Terjadi kesalahan saat melakukan claim."
-        );
-
-        claimButton.disabled = false;
-
-        updateProgress();
-
-    }
-
+    }, 1000); 
 }
 
 
@@ -593,7 +526,7 @@ function showSuccess(storeName) {
             <div class="mb-6">
 
                 <img
-                    src="logo.png"
+                    src="assets/logo.png"
                     class="w-40 mx-auto"
                     alt="Paragon"
                 >
@@ -632,8 +565,8 @@ function showSuccess(storeName) {
 
             <p class="text-sm text-gray-500 mt-3 leading-relaxed">
 
-                Thank you for completing
-                the <b>INT LIP DAY</b> mission!
+                Terima Kasih Sudah Menyelesaikan
+                <br><b>Stamp Journey Mission</b> ini
 
             </p>
 
@@ -697,9 +630,9 @@ function showSuccess(storeName) {
 
                 <p class="text-sm text-gray-600 leading-relaxed">
 
-                    Show this screen to your
+                    Perlihatkan Layar ini Ke
                     <b>Beauty Advisor</b>
-                    to receive your reward.
+                    Untuk Mendapatkan Stamp
 
                 </p>
 
@@ -723,8 +656,30 @@ function showSuccess(storeName) {
 
         </div>
 
-    `;
+    `;confetti({
+        particleCount: 150,
+        spread: 100,
+        origin: { y: 0.6 },
+        colors: ['#be185d', '#ec4899', '#f43f5e', '#fbbf24', '#ffffff'] // Warna senada dengan tema
+    });
 
+    // Tembakan susulan dari pinggir kiri dan kanan agar lebih meriah
+    setTimeout(() => {
+        confetti({
+            particleCount: 100,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 },
+            colors: ['#ec4899', '#fbbf24']
+        });
+        confetti({
+            particleCount: 100,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 },
+            colors: ['#ec4899', '#fbbf24']
+        });
+    }, 400);
 }
 
 
